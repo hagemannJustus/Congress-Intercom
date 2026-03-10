@@ -46,6 +46,8 @@ async def send_magic_link_email(email: str, token: str):
     # We want the link to hit the backend verification or directly the frontend.
     # We will format it so it redirects to the backend which then redirects to the local app.
     backend_url = os.getenv("BACKEND_URL", "http://localhost:8000")
+    if backend_url and not backend_url.startswith("http"):
+        backend_url = f"https://{backend_url}"
     magic_link = f"{backend_url}/verify?token={token}"
     
     subject = "Your Magic Login Link"

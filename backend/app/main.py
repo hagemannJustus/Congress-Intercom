@@ -42,6 +42,8 @@ async def upload_file(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, buffer)
         
     base_url = os.getenv("BACKEND_URL", "http://localhost:8000")
+    if base_url and not base_url.startswith("http"):
+        base_url = f"https://{base_url}"
     return {"url": f"{base_url}/uploads/{filename}"}
 
 # Initialize database tables on startup
@@ -94,6 +96,8 @@ async def verify_token(token: str):
         from fastapi.responses import RedirectResponse
         import os
         frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
+        if frontend_url and not frontend_url.startswith("http"):
+            frontend_url = f"https://{frontend_url}"
         app_url = f"{frontend_url}/verify?token={token}"
         return RedirectResponse(url=app_url)
 
