@@ -17,13 +17,11 @@ services:
           type: web
           name: congress-intercom-backend
           property: host
-        generateValue: "https://${value}"
       - key: FRONTEND_URL
         fromService:
           type: web
           name: congress-intercom-frontend
           property: host
-        generateValue: "https://${value}"
 
   # 2. Frontend Service (Vite Static Site)
   - type: web
@@ -39,7 +37,6 @@ services:
           type: web
           name: congress-intercom-backend
           property: host
-        generateValue: "https://${value}/graphql"
 
 databases:
   - name: congress-intercom-db
