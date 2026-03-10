@@ -7,3 +7,5 @@ python-dotenv
 aiosqlite
 # Needed for generating secure tokens
 itsdangerous
+asyncpg
+python-multipart

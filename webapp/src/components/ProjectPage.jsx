@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowLeft, Send, Clock, ChevronDown, ChevronRight, Plus, Sparkles, RefreshCw, Settings, Bold, Italic, Underline, List } from 'lucide-react';
 import { gql, GraphQLClient } from 'graphql-request';
 
-const BACKEND_URL = 'http://localhost:8000/graphql';
+const BACKEND_URL = import.meta.env.VITE_GRAPHQL_URL || 'http://localhost:8000/graphql';
 const gqlClient = new GraphQLClient(BACKEND_URL, {
     headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' },
 });

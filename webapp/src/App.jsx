@@ -5,7 +5,7 @@ import ManageAgentModal from './components/ManageAgentModal';
 import ProjectPage from './components/ProjectPage';
 import { request, gql, GraphQLClient } from 'graphql-request';
 
-const BACKEND_URL = 'http://localhost:8000/graphql';
+const BACKEND_URL = import.meta.env.VITE_GRAPHQL_URL || 'http://localhost:8000/graphql';
 
 const gqlClient = new GraphQLClient(BACKEND_URL, {
   headers: {

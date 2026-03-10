@@ -41,7 +41,8 @@ async def upload_file(file: UploadFile = File(...)):
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
         
-    return {"url": f"http://localhost:8000/uploads/{filename}"}
+    base_url = os.getenv("BACKEND_URL", "http://localhost:8000")
+    return {"url": f"{base_url}/uploads/{filename}"}
 
 # Initialize database tables on startup
 @app.on_event("startup")
