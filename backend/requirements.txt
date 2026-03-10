@@ -9,3 +9,4 @@ aiosqlite
 itsdangerous
 asyncpg
 python-multipart
+httpx

@@ -78,7 +78,7 @@ def _member_to_type(m) -> ProjectMemberType:
         operator_typing_until=m.operator_typing_until.isoformat(timespec='milliseconds') + 'Z' if m.operator_typing_until else None,
     )
 
-def _project_to_type(p) -> ProjectType:
+    import os
     return ProjectType(
         id=p.id,
         title=p.title,
@@ -90,7 +90,7 @@ def _project_to_type(p) -> ProjectType:
             project_id=p.agent.project_id,
             name=p.agent.name,
             soul=p.agent.soul,
-            gemini_api_key=p.agent.gemini_api_key,
+            gemini_api_key=p.agent.gemini_api_key or os.getenv("GEMINI_API_KEY"),
         ) if p.agent else None,
     )
 
@@ -219,7 +219,12 @@ class Query:
             # Load agent
             agent_result = await db.execute(select(Agent).where(Agent.project_id == project_id))
             agent = agent_result.scalar_one_or_none()
-            if not agent or not agent.gemini_api_key:
+            if not agent:
+                return None
+            
+            import os
+            api_key = agent.gemini_api_key or os.getenv("GEMINI_API_KEY")
+            if not api_key:
                 return None
 
             # Load messages - STRICTLY filtered by project and member email
@@ -275,7 +280,7 @@ Based on the conversation above and your guidelines, decide whether the operator
 
 Respond now:"""
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={agent.gemini_api_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
         # Using a slightly higher temperature for variety on redos
         payload = {
             "contents": [{"parts": [{"text": system_prompt}]}],
