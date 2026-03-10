@@ -4,6 +4,7 @@ from .services.auth import create_magic_link_token
 from .services.mailer import send_magic_link_email
 from .database import AsyncSessionLocal
 import logging
+import os
 
 # ─────────────────────────── Types ───────────────────────────
 
@@ -78,7 +79,7 @@ def _member_to_type(m) -> ProjectMemberType:
         operator_typing_until=m.operator_typing_until.isoformat(timespec='milliseconds') + 'Z' if m.operator_typing_until else None,
     )
 
-    import os
+def _project_to_type(p) -> ProjectType:
     return ProjectType(
         id=p.id,
         title=p.title,
