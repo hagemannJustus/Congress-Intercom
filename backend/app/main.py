@@ -57,11 +57,23 @@ async def on_startup():
     async def add_column_if_missing(table, column_def):
         from sqlalchemy import text
         async with engine.begin() as conn:
-            result = await conn.execute(text(f"PRAGMA table_info({table})"))
-            cols = [row[1] for row in result.fetchall()]
-            if column_def[0] not in cols:
+            # Check if column exists in a cross-database way
+            column_name = column_def[0]
+            column_type = column_def[1]
+            
+            if engine.url.drivername.startswith("sqlite"):
+                result = await conn.execute(text(f"PRAGMA table_info({table})"))
+                cols = [row[1] for row in result.fetchall()]
+                exists = column_name in cols
+            else:
+                # Assuming Postgres for other cases on Render
+                query = text("SELECT column_name FROM information_schema.columns WHERE table_name = :t AND column_name = :c")
+                result = await conn.execute(query, {"t": table, "c": column_name})
+                exists = result.first() is not None
+
+            if not exists:
                 await conn.execute(text(
-                    f"ALTER TABLE {table} ADD COLUMN {column_def[0]} {column_def[1]}"
+                    f"ALTER TABLE {table} ADD COLUMN {column_name} {column_type}"
                 ))
 
     await add_column_if_missing("project_members", ("is_removed", "INTEGER NOT NULL DEFAULT 0"))
