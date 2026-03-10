@@ -13,15 +13,12 @@ services:
           name: congress-intercom-db
           property: connectionString
       - key: BACKEND_URL
-        fromService:
-          type: web
-          name: congress-intercom-backend
-          property: host
+        value: https://congress-intercom-backend-c84u.onrender.com
       - key: FRONTEND_URL
-        fromService:
-          type: web
-          name: congress-intercom-frontend
-          property: host
+        # This will be something like https://congress-intercom-frontend-xxx.onrender.com
+        # Render will automatically assign one, but for verification links, 
+        # it's best to set this after the first deployment or use the dashboard.
+        value: https://congress-intercom-frontend-c84u.onrender.com
 
   # 2. Frontend Service (Vite Static Site)
   - type: web
@@ -32,10 +29,7 @@ services:
     staticPublishPath: dist
     envVars:
       - key: VITE_GRAPHQL_URL
-        fromService:
-          type: web
-          name: congress-intercom-backend
-          property: host
+        value: https://congress-intercom-backend-c84u.onrender.com/graphql
 
 databases:
   - name: congress-intercom-db
