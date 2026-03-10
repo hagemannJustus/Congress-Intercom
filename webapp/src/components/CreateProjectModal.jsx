@@ -1,6 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Upload } from 'lucide-react';
 
+let BACKEND_URL = import.meta.env.VITE_GRAPHQL_URL || 'http://localhost:8000/graphql';
+if (BACKEND_URL && !BACKEND_URL.startsWith('http')) {
+    BACKEND_URL = `https://${BACKEND_URL}/graphql`;
+}
+const UPLOAD_URL = BACKEND_URL.replace('/graphql', '/upload');
+
 /**
  * CreateProjectModal
  *
@@ -103,7 +109,7 @@ const CreateProjectModal = ({ isOpen, onClose, onCreate, editProject = null, onU
             if (picture) {
                 const formData = new FormData();
                 formData.append('file', picture);
-                const uploadResponse = await fetch('http://localhost:8000/upload', {
+                const uploadResponse = await fetch(UPLOAD_URL, {
                     method: 'POST',
                     body: formData,
                 });
