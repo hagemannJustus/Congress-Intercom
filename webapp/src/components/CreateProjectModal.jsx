@@ -109,11 +109,20 @@ const CreateProjectModal = ({ isOpen, onClose, onCreate, editProject = null, onU
             if (picture) {
                 const formData = new FormData();
                 formData.append('file', picture);
-                const uploadResponse = await fetch(UPLOAD_URL, {
-                    method: 'POST',
-                    body: formData,
-                });
+                let uploadResponse;
+                try {
+                    uploadResponse = await fetch(UPLOAD_URL, {
+                        method: 'POST',
+                        body: formData,
+                    });
+                } catch (err) {
+                    throw new Error(`Connection to upload server failed: ${err.message}`);
+                }
+
                 const uploadData = await uploadResponse.json();
+                if (!uploadResponse.ok || uploadData.error) {
+                    throw new Error(uploadData.error || `Upload failed with status ${uploadResponse.status}`);
+                }
                 finalPictureUrl = uploadData.url;
             }
 
@@ -140,7 +149,7 @@ const CreateProjectModal = ({ isOpen, onClose, onCreate, editProject = null, onU
             onClose();
         } catch (error) {
             console.error('Failed to save project:', error);
-            alert('Error saving project. Check console.');
+            alert(`Error: ${error.message || 'Check console for details'}`);
         } finally {
             setLoading(false);
         }

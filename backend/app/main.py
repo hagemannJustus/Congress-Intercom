@@ -33,18 +33,27 @@ import shutil
 
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
-    # Generate unique filename
-    ext = os.path.splitext(file.filename)[1]
-    filename = f"{uuid.uuid4()}{ext}"
-    file_path = os.path.join(UPLOAD_DIR, filename)
-    
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    print(f"Uploading file: {file.filename}")
+    try:
+        # Generate unique filename
+        ext = os.path.splitext(file.filename)[1].lower()
+        if not ext: ext = ".png" # Fallback
+        filename = f"{uuid.uuid4()}{ext}"
+        file_path = os.path.join(UPLOAD_DIR, filename)
         
-    base_url = os.getenv("BACKEND_URL", "http://localhost:8000")
-    if base_url and not base_url.startswith("http"):
-        base_url = f"https://{base_url}"
-    return {"url": f"{base_url}/uploads/{filename}"}
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+            
+        base_url = os.getenv("BACKEND_URL", "http://localhost:8000")
+        if base_url and not base_url.startswith("http"):
+            base_url = f"https://{base_url}"
+        
+        final_url = f"{base_url}/uploads/{filename}"
+        print(f"File uploaded successfully: {final_url}")
+        return {"url": final_url}
+    except Exception as e:
+        print(f"Error during upload: {e}")
+        return {"error": str(e)}, 500
 
 # Initialize database tables on startup
 @app.on_event("startup")
