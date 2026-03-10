@@ -196,9 +196,9 @@ function App() {
   const handleCreateProject = async (projectData) => {
     try {
       await gqlClient.request(CREATE_PROJECT_MUTATION, projectData);
-      await fetchProjects();
       setIsModalOpen(false);
       setEditProject(null);
+      await fetchProjects();
     } catch (error) {
       console.error('GraphQL Error:', error);
       throw error;
@@ -225,9 +225,9 @@ function App() {
   const handleUpdateProject = async (id, projectData) => {
     try {
       await gqlClient.request(UPDATE_PROJECT_MUTATION, { id: parseInt(id), ...projectData });
-      await fetchProjects();
       setIsModalOpen(false);
       setEditProject(null);
+      await fetchProjects();
     } catch (error) {
       console.error('GraphQL Error on update:', error);
       throw error;
