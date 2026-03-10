@@ -24,10 +24,8 @@ services:
           property: host
 
   # 2. Frontend Service (Vite Static Site)
-  - type: web
+  - type: static
     name: congress-intercom-frontend
-    plan: free
-    env: static
     rootDir: webapp
     buildCommand: npm install && npm run build
     staticPublishPath: dist
