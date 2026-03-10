@@ -9,18 +9,21 @@ services:
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
-        # Default to internal SQLite, but can be overridden by a linked DB
-        value: sqlite+aiosqlite:///./magic_links.db
+        fromDatabase:
+          name: congress-intercom-db
+          property: connectionString
       - key: BACKEND_URL
         fromService:
           type: web
           name: congress-intercom-backend
           property: host
+        generateValue: "https://${value}"
       - key: FRONTEND_URL
         fromService:
           type: web
           name: congress-intercom-frontend
           property: host
+        generateValue: "https://${value}"
 
   # 2. Frontend Service (Vite Static Site)
   - type: web
@@ -36,9 +39,8 @@ services:
           type: web
           name: congress-intercom-backend
           property: host
+        generateValue: "https://${value}/graphql"
 
-# Optional: Add a PostgreSQL database if you want persistence
-# Render's free tier DBs expire after 90 days.
-# databases:
-#   - name: congress-intercom-db
-#     plan: free
+databases:
+  - name: congress-intercom-db
+    plan: free
