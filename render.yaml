@@ -2,6 +2,7 @@ services:
   # 1. Backend Service (FastAPI)
   - type: web
     name: congress-intercom-backend
+    plan: free
     env: python
     rootDir: backend
     buildCommand: pip install -r requirements.txt
@@ -24,6 +25,7 @@ services:
   # 2. Frontend Service (Vite Static Site)
   - type: web
     name: congress-intercom-frontend
+    plan: free
     env: static
     rootDir: webapp
     buildCommand: npm install && npm run build
