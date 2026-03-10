@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+strawberry-graphql[fastapi]
+sqlalchemy
+pydantic[email]
+python-dotenv
+aiosqlite
+# Needed for generating secure tokens
+itsdangerous
